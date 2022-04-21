@@ -1,0 +1,25 @@
+{
+  "name": "support-bank",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chidin194/Support-Bank.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/chidin194/Support-Bank/issues"
+  },
+  "homepage": "https://github.com/chidin194/Support-Bank#readme",
+  "dependencies": {
+    "csv-parser": "^3.0.0",
+    "fs": "0.0.1-security",
+    "moment": "^2.29.3",
+    "readline-sync": "^1.4.10"
+  }
+}
