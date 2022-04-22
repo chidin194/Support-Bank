@@ -6,16 +6,28 @@ const csv = require('csv-parser');
 const fs = require('fs');
 const ps = require('prompt-sync');
 const prompt = ps();
+const log4js = require('log4js');
+const logger = log4js.getLogger('index.js');
+const moment = require('moment');
 
+log4js.configure({
+    appenders: {
+        file: { type: 'fileSync', filename: 'logs/debug.log' }
+    },
+    categories: {
+        default: { appenders: ['file'], level: 'debug'}
+    }
+});
 
-
+// logger.info("Test log")
 
 let transactions2014Json = [];
 
-function csvToJson() {
+function csvParser(fileName) {
     return new Promise((resolve,reject)=> {
         let result = [];
-        fs.createReadStream('Transactions2014.csv')
+
+        fs.createReadStream(fileName)
             .pipe(csv())
             .on('data', (data) => result.push(data))
             .on('end', () => {
@@ -27,17 +39,22 @@ function csvToJson() {
             })
     })}
 
+function jsonParser(fileName) {
+    
+}
 
-const getTransactions = async() => {
-    transactions2014Json = await Promise.resolve(csvToJson())
+
+const getTransactions = async(fileName) => {
+    transactions2014Json = await Promise.resolve(csvParser(fileName));
     return transactions2014Json;
 }
 
 const runProgram = async () => {
 
+    let userFile = prompt("Please enter a file name:")
     let userCommand = prompt("Please enter a command:")
 
-    const transactions = await getTransactions();
+    const transactions = await getTransactions(userFile);
     let newBank = new Bank([])
 
     transactions.forEach(transaction => {
@@ -51,28 +68,57 @@ const runProgram = async () => {
     });
 
     let transactionList = [];
+
+    const isDateValid = (d) => moment(d, 'DD/MM/YYYY', true).isValid();
+
+    const isAmountValid = (a) => {
+        if (!parseFloat(a) || a.split('.')[1].length !== 2) {
+            return false
+        }
+        return true
+    }
+
     transactions.forEach(transaction => {
-        let newTransaction = new Transaction(
-            transaction.Date,
-            transaction.From,
-            transaction.To,
-            transaction.Narrative,
-            transaction.Amount
-        )
-        transactionList.push(newTransaction);
+
+        try {
+            isDateValid(transaction.Date);
+            parseFloat(transaction.Amount);
+
+
+            if (!isDateValid(transaction.Date)) {
+                logger.error(`Date is not in a valid format for transaction dated ${transaction.Date}`)
+            } else if (!isAmountValid(transaction.Amount)) {
+                logger.error(`Please provide a suitable value for field 'amount' for transaction 
+                dated ${transaction.Date}. Note that this must be a number with two decimal places`)
+            } else {
+                let newTransaction = new Transaction(
+                    transaction.Date,
+                    transaction.From,
+                    transaction.To,
+                    transaction.Narrative,
+                    transaction.Amount
+                )
+                transactionList.push(newTransaction);
+            }
+        }
+        catch(err) {
+            return
+            logger.error(err);
+        }
+
     })
 
 
         if (userCommand === "List All") {
-            console.log(newBank.accountList.toString());
+            for(const account in newBank.accountList) {
+                console.log(newBank.accountList[account]);
+            }
         } else if (userCommand ) {
             let userTransactionList = []
             transactionList.forEach(transaction => {
-                if (transaction.accountFrom === userCommand.substring(5)|| transaction.accountTo === userCommand.substring(5)) {
+                if (transaction.accountFrom === userCommand.substring(5)
+                    || transaction.accountTo === userCommand.substring(5)) {
                     userTransactionList.push(transaction)
-
-
-
                 }
             })
 
