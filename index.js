@@ -39,9 +39,17 @@ function csvParser(fileName) {
             })
     })}
 
-function jsonParser(fileName) {
-    
-}
+// function jsonParser(fileName) {
+//     let result = [];
+//
+//     for (const obj of fileName) {
+//         JSON.parse(obj)
+//         result.push(obj);
+//     }
+//
+//
+//
+// }
 
 
 const getTransactions = async(fileName) => {
