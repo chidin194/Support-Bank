@@ -8,6 +8,9 @@ const prompt = ps();
 const log4js = require('log4js');
 const logger = log4js.getLogger('program.js');
 const moment = require('moment');
+const {csvParser, getTransactions, validateTransactions} = require('./csvParser');
+const {jsonParser} = require('./jsonParser');
+const xmlParser = require('./xmlParser');
 
 log4js.configure({
     appenders: {
@@ -24,6 +27,19 @@ const runProgram = () => {
 
     let userFile = prompt("Please enter a file name:")
     // let userCommand = prompt("Please enter a command:")
+
+    const userFileType = userFile.split(".")[1];
+
+    if (userFileType === 'csv') {
+        csvParser(userFile);
+        getTransactions(userFile);
+        validateTransactions(userFile);
+    } else if (userFileType === 'json') {
+        jsonParser(userFile);
+    } else if (userFileType === 'xml') {
+        xmlParser(userFile)
+    }
+
 
 
     // MOVE TO BANKING COMMANDS

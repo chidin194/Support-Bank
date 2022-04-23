@@ -4,7 +4,7 @@ const log4js = require('log4js');
 const logger = log4js.getLogger('program.js');
 
 
-module.exports = function jsonParser(fileName) {
+const jsonParser = (fileName) => {
     try {
         const jsonString = fs.readFileSync(fileName, 'utf-8')
         const result = JSON.parse(jsonString);
@@ -30,7 +30,7 @@ module.exports = function jsonParser(fileName) {
     }
 }
 
-
+module.exports = {jsonParser}
 
 
 

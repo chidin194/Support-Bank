@@ -64,6 +64,7 @@ const validateTransactions = async (fileName) => {
                     transaction.Amount
                 )
                 transactionList.push(newTransaction);
+                console.log(transactionList);
                 return transactionList
             }
         } catch (err) {

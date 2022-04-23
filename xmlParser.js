@@ -22,6 +22,7 @@ module.exports =  function xmlParser(fileName) {
             t.getElementsByTagName("Value")[0].textContent,
         )
         transactions.push(newTransaction)
-        return transactions
     }
+    console.log(transactions);
+    return transactions
 }
