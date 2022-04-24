@@ -21,7 +21,7 @@ const jsonParser = (fileName) => {
             )
             transactions.push(newTransaction);
         }
-        console.log(transactions)
+        return transactions;
     }
 
     catch(err) {

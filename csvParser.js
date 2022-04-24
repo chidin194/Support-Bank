@@ -5,7 +5,7 @@ const moment = require("moment");
 const {Transaction} = require("./classes");
 const logger = log4js.getLogger('program.js');
 
-const csvParser = (fileName) => {
+const csvFileReader = (fileName) => {
     return new Promise((resolve, reject) => {
         let result = [];
 
@@ -24,7 +24,7 @@ const csvParser = (fileName) => {
 
 const getTransactions = async (fileName) => {
     let transactions = [];
-    transactions = await Promise.resolve(csvParser(fileName));
+    transactions = await Promise.resolve(csvFileReader(fileName));
     return transactions;
 }
 
@@ -64,7 +64,6 @@ const validateTransactions = async (fileName) => {
                     transaction.Amount
                 )
                 transactionList.push(newTransaction);
-                console.log(transactionList);
                 return transactionList
             }
         } catch (err) {
@@ -74,5 +73,12 @@ const validateTransactions = async (fileName) => {
     })
 }
 
-module.exports = {csvParser, getTransactions, validateTransactions}
+const csvParser = async (fileName) => {
+    await validateTransactions(fileName);
+}
+
+
+
+
+module.exports = {csvParser, csvFileReader, getTransactions, validateTransactions}
 

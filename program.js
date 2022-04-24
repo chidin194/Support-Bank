@@ -8,9 +8,7 @@ const prompt = ps();
 const log4js = require('log4js');
 const logger = log4js.getLogger('program.js');
 const moment = require('moment');
-const {csvParser, getTransactions, validateTransactions} = require('./csvParser');
-const {jsonParser} = require('./jsonParser');
-const xmlParser = require('./xmlParser');
+const {importFile, listAll, listAccountTransactions} = require('./commands')
 
 log4js.configure({
     appenders: {
@@ -23,45 +21,34 @@ log4js.configure({
 
 // logger.info("Test log")
 
-const runProgram = () => {
+const runProgram = async () => {
 
     let userFile = prompt("Please enter a file name:")
-    // let userCommand = prompt("Please enter a command:")
 
-    const userFileType = userFile.split(".")[1];
+    const file = await importFile(userFile);
 
-    if (userFileType === 'csv') {
-        csvParser(userFile);
-        getTransactions(userFile);
-        validateTransactions(userFile);
-    } else if (userFileType === 'json') {
-        jsonParser(userFile);
-    } else if (userFileType === 'xml') {
-        xmlParser(userFile)
+    let userCommand = prompt("Please enter a command:")
+
+    if(userCommand === 'List All') {
+        listAll(importFile(userFile));
+    } else if(userCommand === 'List' + userCommand.substring(5)) {
+        try {
+            listAccountTransactions(file, userCommand.substring(5));
+        }
+        catch {
+            logger.error(`'${userCommand}' is not a recognised command`)
+            return
+        }
     }
 
 
 
-    // MOVE TO BANKING COMMANDS
-    // let newBank = new Bank([])
-    // transactions.forEach(transaction => {
-    //     for (let key in transaction) {
-    //         if (key === "From" || key == "To") {
-    //             if (newBank.accountList.indexOf(transaction[key]) < 0) {
-    //                 newBank.accountList.push(transaction[key])
-    //             }
-    //         }
-    //     }
-    // });
 
-    // error handling
 
-    //
-    // if (userCommand === "List All") {
-    //     for (const account in newBank.accountList) {
-    //         console.log(newBank.accountList[account]);
-    //     }
-    // } else if (userCommand) {
+
+    // userCommand.substring(5)
+
+    // else if (userCommand) {
     //     let userTransactionList = []
     //     transactionList.forEach(transaction => {
     //         if (transaction.accountFrom === userCommand.substring(5)

@@ -23,6 +23,5 @@ module.exports =  function xmlParser(fileName) {
         )
         transactions.push(newTransaction)
     }
-    console.log(transactions);
     return transactions
 }
