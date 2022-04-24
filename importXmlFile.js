@@ -4,7 +4,7 @@ const {Transaction} = require('./classes.js')
 const log4js = require('log4js');
 const logger = log4js.getLogger('program.js');
 
-module.exports =  function xmlParser(fileName) {
+module.exports =  function importXmlFile(fileName) {
     const xml = fs.readFileSync(fileName, 'utf-8');
     const dom = new jsdom.JSDOM(xml);
 

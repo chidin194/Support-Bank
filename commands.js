@@ -1,6 +1,6 @@
-const {csvParser, getTransactions, validateTransactions} = require('./csvParser');
-const {jsonParser} = require('./jsonParser');
-const xmlParser = require('./xmlParser');
+const {csvParser, getTransactions, validateTransactions} = require('./importCsvFile');
+const {jsonParser} = require('./importJsonFile');
+const xmlParser = require('./importXmlFile');
 const {Bank} = require('./classes');
 
 const importFile = async (file) => {
@@ -13,7 +13,7 @@ const importFile = async (file) => {
     } else if (userFileType === 'json') {
         return jsonParser(file);
     } else if (userFileType === 'xml') {
-        return xmlParser(file)
+        return importXmlFile(file)
     }
 }
 

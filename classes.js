@@ -1,7 +1,9 @@
 class Account {
-    constructor(accountName, transactionList) {
+    constructor(accountName, transactionList, balance) {
         this.accountName = accountName;
         this.transactionList = transactionList;
+        this.balance = balance;
+
     }
 }
 
