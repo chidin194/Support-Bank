@@ -1,7 +1,6 @@
 const {Bank} = require('./classes.js')
 const {Transaction} = require('./classes.js')
 const {Account} = require('./classes.js')
-const csv = require('csv-parser');
 const fs = require('fs');
 const ps = require('prompt-sync');
 const prompt = ps();
@@ -9,6 +8,7 @@ const log4js = require('log4js');
 const logger = log4js.getLogger('program.js');
 const moment = require('moment');
 const {importFile, listAll, listAccountTransactions} = require('./commands')
+const {checkTransactions} = require("./errorHandling");
 
 log4js.configure({
     appenders: {
@@ -19,54 +19,31 @@ log4js.configure({
     }
 });
 
+
 // logger.info("Test log")
 
-const runProgram = async () => {
+const runProgram = () => {
 
     let userFile = prompt("Please enter a file name:")
 
-    const file = await importFile(userFile);
+    const transactions = importFile(userFile);
+
+    checkTransactions(transactions);
 
     let userCommand = prompt("Please enter a command:")
 
+
     if(userCommand === 'List All') {
-        listAll(importFile(userFile));
-    } else if(userCommand === 'List' + userCommand.substring(5)) {
+        listAll(transactions);
+    } else if(userCommand.match(/List.*/g )) {
         try {
-            listAccountTransactions(file, userCommand.substring(5));
+            listAccountTransactions(transactions, userCommand.substring(5));
         }
         catch {
-            logger.error(`'${userCommand}' is not a recognised command`)
+            logger.error(`Unable to find account holder`)
             return
         }
     }
-
-
-
-
-
-
-    // userCommand.substring(5)
-
-    // else if (userCommand) {
-    //     let userTransactionList = []
-    //     transactionList.forEach(transaction => {
-    //         if (transaction.accountFrom === userCommand.substring(5)
-    //             || transaction.accountTo === userCommand.substring(5)) {
-    //             userTransactionList.push(transaction)
-    //         }
-    //     })
-    //
-    //     console.log(`
-    //                     Total transactions found: ${userTransactionList.length}`)
-    //
-    //     for (const t of userTransactionList) {
-    //         console.log(`
-    //                     ${t.date}: ${t.accountFrom} paid £${t.amount} to ${t.accountTo}
-    //                     Ref: ${t.narrative}`);
-    //     }
-    // }
-
 }
 
 

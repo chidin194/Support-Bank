@@ -1,28 +1,29 @@
-const {csvParser, getTransactions, validateTransactions} = require('./importCsvFile');
-const {jsonParser} = require('./importJsonFile');
-const xmlParser = require('./importXmlFile');
-const {Bank} = require('./classes');
+const {importCsvFile} = require('./importCsvFile');
+const {importJsonFile} = require('./importJsonFile');
+const {importXmlFile} = require('./importXmlFile');
+const {Account, Transaction, Bank} = require('./classes');
+const log4js = require("log4js");
+const logger = log4js.getLogger('program.js');
 
-const importFile = async (file) => {
+
+const importFile = (file) => {
 
     const userFileType = file.split(".")[1];
 
     if (userFileType === 'csv') {
-        const result = csvParser(file)
-        return result;
+        return importCsvFile(file);
     } else if (userFileType === 'json') {
-        return jsonParser(file);
+        return importJsonFile(file);
     } else if (userFileType === 'xml') {
-        return importXmlFile(file)
+        return importXmlFile(file);
     }
 }
 
-const listAll = async (transactions) => {
+const listAll = (transactions) => {
 
     let newBank = new Bank([]);
-    const t = await transactions;
 
-    t.forEach(transaction => {
+    transactions.forEach(transaction => {
         for (let key in transaction) {
             if (key === "accountFrom" || key == "accountTo") {
                 if (newBank.accountList.indexOf(transaction[key]) < 0) {
@@ -35,29 +36,50 @@ const listAll = async (transactions) => {
     for (const account in newBank.accountList) {
         console.log(newBank.accountList[account]);
     }
+
+    return newBank;
 }
 
-const listAccountTransactions = (file, userCommand) => {
-
-    const transactions = importFile(file);
+const listAccountTransactions = (transactions, user) => {
 
     let userTransactionList = []
+    let accountBalance = 0;
+
     transactions.forEach(transaction => {
-        if (transaction.accountFrom === userCommand
-            || transaction.accountTo === userCommand) {
+        if (transaction.accountFrom === user
+            || transaction.accountTo === user) {
             userTransactionList.push(transaction)
         }
     })
 
+    if(userTransactionList.length === 0){
+        logger.error('Unable to find account holder. Please try again')
+        return
+    }
+
+
+    for(let i=0; i < userTransactionList.length; i++) {
+        const t = userTransactionList[i];
+        if(user === t.accountTo) {
+            accountBalance += t.amount;
+        } else if (user === t.accountFrom) {
+            accountBalance -= t.amount;
+        }
+    }
+
     console.log(`
-                        Total transactions found: ${userTransactionList.length}`)
+                        Total transactions found: ${userTransactionList.length}
+                        Account balance: ${accountBalance.toFixed(2)}`)
 
     for (const t of userTransactionList) {
         console.log(`
                         ${t.date}: ${t.accountFrom} paid £${t.amount} to ${t.accountTo}
                         Ref: ${t.narrative}`);
     }
+
 }
+
+
 
 
 

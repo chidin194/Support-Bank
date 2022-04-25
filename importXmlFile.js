@@ -2,9 +2,11 @@ const fs = require('fs');
 const jsdom = require("jsdom");
 const {Transaction} = require('./classes.js')
 const log4js = require('log4js');
+const {checkTransactions} = require("./errorHandling");
 const logger = log4js.getLogger('program.js');
 
-module.exports =  function importXmlFile(fileName) {
+const importXmlFile = (fileName) => {
+
     const xml = fs.readFileSync(fileName, 'utf-8');
     const dom = new jsdom.JSDOM(xml);
 
@@ -19,9 +21,11 @@ module.exports =  function importXmlFile(fileName) {
             t.getElementsByTagName("From")[0].textContent,
             t.getElementsByTagName("To")[0].textContent,
             t.getElementsByTagName("Description")[0].textContent,
-            t.getElementsByTagName("Value")[0].textContent,
+            +t.getElementsByTagName("Value")[0].textContent,
         )
         transactions.push(newTransaction)
     }
-    return transactions
+    return transactions;
 }
+
+module.exports = {importXmlFile}

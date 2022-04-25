@@ -15,12 +15,9 @@ const isAmountValid = (a) => {
 
 const checkTransactions = (transactions) => {
 
-    let transactionList = [];
-
     transactions.forEach(transaction => {
 
         try {
-
             isDateValid(transaction.Date);
             parseFloat(transaction.Amount);
 
@@ -30,23 +27,13 @@ const checkTransactions = (transactions) => {
                 logger.error(`Please provide a suitable value for field 'amount' for transaction
                 dated ${transaction.Date}. Note that this must be a number with two decimal places`)
             } else {
-                let newTransaction = new Transaction(
-                    transaction.Date,
-                    transaction.From,
-                    transaction.To,
-                    transaction.Narrative,
-                    transaction.Amount
-                )
-                transactionList.push(newTransaction);
-                return transactionList
+                return transactions
             }
         } catch (err) {
             logger.error(err);
             return
         }
     })
-
-    return transactionList
 }
 
 module.exports = {isDateValid, isAmountValid, checkTransactions}

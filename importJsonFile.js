@@ -1,10 +1,12 @@
 const fs = require('fs');
 const {Transaction} = require('./classes.js')
 const log4js = require('log4js');
+const {checkTransactions} = require("./errorHandling");
 const logger = log4js.getLogger('program.js');
 
 
 const importJsonFile = (fileName) => {
+
     try {
         const jsonString = fs.readFileSync(fileName, 'utf-8')
         const result = JSON.parse(jsonString);

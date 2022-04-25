@@ -3,7 +3,6 @@ class Account {
         this.accountName = accountName;
         this.transactionList = transactionList;
         this.balance = balance;
-
     }
 }
 
@@ -22,7 +21,5 @@ class Bank {
         this.accountList = accountList;
     }
 }
-
-// export { Account, Transaction, Bank }
 
 module.exports = { Account, Transaction, Bank }
