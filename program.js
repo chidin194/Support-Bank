@@ -23,31 +23,32 @@ log4js.configure({
 // logger.info("Test log")
 
 const runProgram = () => {
+    do {
+        let userFile = prompt("Please enter a file name:")
 
-    let userFile = prompt("Please enter a file name:")
+        const transactions = importFile(userFile);
 
-    const transactions = importFile(userFile);
+        checkTransactions(transactions);
 
-    checkTransactions(transactions);
-
-    let userCommand = prompt("Please enter a command:")
+        let userCommand = prompt("Please enter a command:")
 
 
-    if(userCommand === 'List All') {
-        listAll(transactions);
-    } else if(userCommand.match(/List.*/g )) {
-        try {
-            listAccountTransactions(transactions, userCommand.substring(5));
+        if (userCommand === 'List All') {
+            listAll(transactions);
+        } else if (userCommand.match(/List.*/g)) {
+            try {
+                listAccountTransactions(transactions, userCommand.substring(5));
+            } catch {
+                logger.error(`Unable to process file. Please review`)
+                return
+            }
         }
-        catch {
-            logger.error(`Unable to find account holder`)
-            return
-        }
-    }
+    } while(true);
 }
 
 
 runProgram();
+
 
 
 

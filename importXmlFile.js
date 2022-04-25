@@ -3,6 +3,7 @@ const jsdom = require("jsdom");
 const {Transaction} = require('./classes.js')
 const log4js = require('log4js');
 const {checkTransactions} = require("./errorHandling");
+const moment = require("moment");
 const logger = log4js.getLogger('program.js');
 
 const importXmlFile = (fileName) => {
@@ -15,6 +16,7 @@ const importXmlFile = (fileName) => {
 
     for (let i = 0; i < xmlTransactions.length; i++) {
         const t = xmlTransactions[i];
+
         const newTransaction = new Transaction(
             new Date(Date.UTC(0, 0, t.attributes[0].textContent - 1, 0, 0, 0))
                 .toLocaleDateString(),
@@ -25,6 +27,7 @@ const importXmlFile = (fileName) => {
         )
         transactions.push(newTransaction)
     }
+    console.log(transactions)
     return transactions;
 }
 

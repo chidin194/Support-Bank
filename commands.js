@@ -4,6 +4,8 @@ const {importXmlFile} = require('./importXmlFile');
 const {Account, Transaction, Bank} = require('./classes');
 const log4js = require("log4js");
 const logger = log4js.getLogger('program.js');
+const moment = require('moment');
+
 
 
 const importFile = (file) => {
@@ -53,7 +55,9 @@ const listAccountTransactions = (transactions, user) => {
     })
 
     if(userTransactionList.length === 0){
-        logger.error('Unable to find account holder. Please try again')
+        const e = 'Unable to find account holder. Please try again'
+        logger.error(e)
+        console.log(e)
         return
     }
 
