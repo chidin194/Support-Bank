@@ -81,6 +81,8 @@ const listAccountTransactions = (transactions, user) => {
                         Ref: ${t.narrative}`);
     }
 
+    return userTransactionList;
+
 }
 
 

@@ -27,7 +27,6 @@ const importXmlFile = (fileName) => {
         )
         transactions.push(newTransaction)
     }
-    console.log(transactions)
     return transactions;
 }
 

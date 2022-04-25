@@ -10,6 +10,8 @@ const moment = require('moment');
 const {importFile, listAll, listAccountTransactions} = require('./commands')
 const {checkTransactions} = require("./errorHandling");
 const {exportXmlFile} = require("./exportXmlFile");
+const {exportCsvFile} = require("./exportCsvFile");
+
 
 log4js.configure({
     appenders: {
@@ -31,25 +33,53 @@ const runProgram = () => {
 
         checkTransactions(transactions);
 
-        exportXmlFile(transactions);
-
-
         let userCommand = prompt("Please enter a command:")
+
         if (userCommand === 'List All') {
             listAll(transactions);
         } else if (userCommand.match(/List.*/g)) {
             try {
                 listAccountTransactions(transactions, userCommand.substring(5));
+                let exportChoice = prompt("Would you like to export your transactions? (Y/N)")
+
+                if(exportChoice === 'Y') {
+                    let exportFormat = prompt("Please enter an export format(csv/json/xml)");
+                    const exportTransactions = listAccountTransactions(transactions, userCommand.substring(5));
+                    if(exportFormat === 'csv') {
+                        exportCsvFile(exportTransactions)
+                    } else if (exportFormat === 'xml') {
+                        exportXmlFile(exportTransactions);
+                    } else if (exportFormat === 'json') {
+                        console.log(exportTransactions)
+                    }
+                } else {
+                    return
+                }
             } catch {
                 logger.error(`Unable to process file. Please review`)
                 return
             }
         }
+
+
+        // let exportChoice = prompt("Would you like to export your transactions? (Y/N)")
+        //
+        // if(exportChoice === 'Y') {
+        //     let exportFormat = prompt("Please enter an export format(csv/json/xml)");
+        //     const exportTransactions = listAccountTransactions(transactions, userCommand.substring(5));
+        //     if(exportFormat === 'csv') {
+        //         exportCsvFile(exportTransactions)
+        //     } else if (exportFormat === 'xml') {
+        //         exportXmlFile(exportTransactions);
+        //     } else if (exportFormat === 'json') {}
+        //     console.log(exportTransactions)
+        // } else {
+        //     return
+        // }
+
     } while(true);
 
-
 }
-
 
 runProgram();
 
