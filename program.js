@@ -9,6 +9,7 @@ const logger = log4js.getLogger('program.js');
 const moment = require('moment');
 const {importFile, listAll, listAccountTransactions} = require('./commands')
 const {checkTransactions} = require("./errorHandling");
+const {exportXmlFile} = require("./exportXmlFile");
 
 log4js.configure({
     appenders: {
@@ -30,9 +31,10 @@ const runProgram = () => {
 
         checkTransactions(transactions);
 
+        exportXmlFile(transactions);
+
+
         let userCommand = prompt("Please enter a command:")
-
-
         if (userCommand === 'List All') {
             listAll(transactions);
         } else if (userCommand.match(/List.*/g)) {
@@ -44,10 +46,13 @@ const runProgram = () => {
             }
         }
     } while(true);
+
+
 }
 
 
 runProgram();
+
 
 
 
