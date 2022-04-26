@@ -1,16 +1,15 @@
-const {Bank} = require('./classes.js')
-const {Transaction} = require('./classes.js')
-const {Account} = require('./classes.js')
+const {Bank, Transaction, Account} = require('./classes.js')
 const fs = require('fs');
 const ps = require('prompt-sync');
-const prompt = ps();
 const log4js = require('log4js');
-const logger = log4js.getLogger('program.js');
 const moment = require('moment');
-const {importFile, listAll, listAccountTransactions} = require('./commands')
+const {importFile, exportFile, listAll, listAccountTransactions} = require('./commands')
 const {checkTransactions} = require("./errorHandling");
 const {exportXmlFile} = require("./exportXmlFile");
 const {exportCsvFile} = require("./exportCsvFile");
+
+const prompt = ps();
+const logger = log4js.getLogger('program.js');
 
 
 log4js.configure({
@@ -22,36 +21,27 @@ log4js.configure({
     }
 });
 
-
-// logger.info("Test log")
-
 const runProgram = () => {
-    do {
-        let userFile = prompt("Please enter a file name:")
+    while (true) {
+        const userFile = prompt("Please enter a file name:")
 
         const transactions = importFile(userFile);
 
         checkTransactions(transactions);
 
-        let userCommand = prompt("Please enter a command:")
+        const userCommand = prompt("Please enter a command:")
 
-        if (userCommand === 'List All') {
+        if (userCommand.match(/list all/ig)) {
             listAll(transactions);
-        } else if (userCommand.match(/List.*/g)) {
+        } else if (userCommand.match(/List.*/ig)) {
             try {
                 listAccountTransactions(transactions, userCommand.substring(5));
-                let exportChoice = prompt("Would you like to export your transactions? (Y/N)")
+                const exportChoice = prompt("Would you like to export your transactions? (Y/N)", "", {})
 
                 if(exportChoice === 'Y') {
-                    let exportFormat = prompt("Please enter an export format(csv/json/xml)");
+                    const exportFormat = prompt("Please enter an export format(csv/json/xml)");
                     const exportTransactions = listAccountTransactions(transactions, userCommand.substring(5));
-                    if(exportFormat === 'csv') {
-                        exportCsvFile(exportTransactions)
-                    } else if (exportFormat === 'xml') {
-                        exportXmlFile(exportTransactions);
-                    } else if (exportFormat === 'json') {
-                        console.log(exportTransactions)
-                    }
+                    exportFile(exportFormat, exportTransactions);
                 } else {
                     return
                 }
@@ -59,31 +49,11 @@ const runProgram = () => {
                 logger.error(`Unable to process file. Please review`)
                 return
             }
+        } else {
+            console.log(`${userCommand} is not a recognised command. Please try again`)
+            return
         }
-
-
-        // let exportChoice = prompt("Would you like to export your transactions? (Y/N)")
-        //
-        // if(exportChoice === 'Y') {
-        //     let exportFormat = prompt("Please enter an export format(csv/json/xml)");
-        //     const exportTransactions = listAccountTransactions(transactions, userCommand.substring(5));
-        //     if(exportFormat === 'csv') {
-        //         exportCsvFile(exportTransactions)
-        //     } else if (exportFormat === 'xml') {
-        //         exportXmlFile(exportTransactions);
-        //     } else if (exportFormat === 'json') {}
-        //     console.log(exportTransactions)
-        // } else {
-        //     return
-        // }
-
-    } while(true);
-
+    };
 }
 
 runProgram();
-
-
-
-
-

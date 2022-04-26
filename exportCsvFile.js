@@ -1,12 +1,13 @@
-const { Parser } = require('json2csv');
-const { parse } = require('json2csv');
+const { Parser, parse } = require('json2csv');
+const fs = require('fs');
 
 const exportCsvFile = (transactions) => {
 
     try {
-        const parser = new Parser(0);
+        const parser = new Parser({});
         const csv = parser.parse(transactions);
-        console.log(csv);
+        fs.writeFileSync('transactions.csv', csv)
+        console.log('File is now available to view')
     } catch (err) {
         console.error(err);
     }
